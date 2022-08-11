@@ -1,5 +1,6 @@
-﻿using Features.Position;
-using Features.Unit;
+﻿using Features.Behaviour;
+using Features.Game;
+using Features.Position;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnityEngine;
@@ -9,6 +10,9 @@ namespace Features.Movement
     public class RotateSystem : IEcsRunSystem
     {
         private readonly EcsFilterInject<Inc<RotateComponent, PoseComponent>> _unitPool;
+
+        private readonly EcsPoolInject<UnitReachedTargetEvent> _targetReachedEvents = Idents.Worlds.Events;
+
         private const double DiffToStop = 3;
 
         public void Run(IEcsSystems systems)
@@ -26,6 +30,11 @@ namespace Features.Movement
                 if ((currentRotation.eulerAngles - rotateComponent.TargetRotation.eulerAngles).sqrMagnitude <=
                     DiffToStop)
                 {
+                    ref var reachedEvent =
+                        ref _targetReachedEvents.Value.Add(_targetReachedEvents.Value.GetWorld().NewEntity());
+
+                    reachedEvent.UnitEntity = entity;
+                    
                     //TODO make new decision
                     rotateComponent.TargetRotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
                 }

@@ -1,4 +1,4 @@
-namespace Features.Unit
+namespace Features.Movement
 {
     public struct MoveCommand
     {
