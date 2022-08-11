@@ -7,17 +7,17 @@ namespace Features.Movement
 {
     public class MoveSystem : IEcsRunSystem
     {
-        private readonly EcsFilterInject<Inc<MoveComponent, PositionComponent>> _movePool;
+        private readonly EcsFilterInject<Inc<MoveComponent, PoseComponent>> _movePool;
 
         public void Run(IEcsSystems systems)
         {
             foreach (var entity in _movePool.Value)
             {
                 var moveComponent = _movePool.Pools.Inc1.Get(entity);
-                var positionComponent = _movePool.Pools.Inc2.Get(entity);
+                ref var positionComponent = ref _movePool.Pools.Inc2.Get(entity);
 
-                positionComponent.Transform.localPosition +=
-                    positionComponent.Transform.forward * moveComponent.MoveSpeed * Time.deltaTime;
+                positionComponent.Pose.position +=
+                    positionComponent.Pose.forward * moveComponent.MoveSpeed * Time.deltaTime;
             }
         }
     }

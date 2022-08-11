@@ -2,8 +2,9 @@
 
 namespace Features.Position
 {
-    public struct PositionComponent
+    public struct PoseComponent
     {
         public Transform Transform;
+        public Pose Pose;
     }
 }

@@ -7,7 +7,7 @@ namespace Features.Movement
 {
     public class StartMovingSystem : IEcsRunSystem
     {
-        private readonly EcsFilterInject<Inc<UnitComponent, PositionComponent, MoveCommand>, Exc<MoveComponent>>
+        private readonly EcsFilterInject<Inc<UnitComponent, PoseComponent, MoveCommand>, Exc<MoveComponent>>
             _unitPool;
 
         private readonly EcsPoolInject<MoveComponent> _movePool;

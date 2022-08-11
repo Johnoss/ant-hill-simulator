@@ -13,7 +13,7 @@ namespace Features.Spawning
         private readonly EcsFilterInject<Inc<SpawnUnitEvent>> _spawnEvents = Idents.Worlds.Events;
 
         private readonly EcsPoolInject<UnitComponent> _unitPool = default;
-        private readonly EcsPoolInject<PositionComponent> _positionPool;
+        private readonly EcsPoolInject<PoseComponent> _positionPool;
         private readonly EcsPoolInject<RotateComponent> _rotatePool;
         private readonly EcsPoolInject<MoveCommand> _moveCommandPool = default;
 
@@ -39,7 +39,6 @@ namespace Features.Spawning
                 unitComponent.MoveSpeed = _unitConfig.Value.AntSpeed;
 
                 rotateComponent.RotateSpeed = _unitConfig.Value.AntTurnSpeed;
-                rotateComponent.Transform = unitTransform;
                 //TODO make extension
                 rotateComponent.TargetRotation = Quaternion.Euler(0, Random.Range(0,360), 0);
                 

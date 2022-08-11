@@ -6,6 +6,5 @@ namespace Features.Movement
     {
         public float RotateSpeed;
         public Quaternion TargetRotation;
-        public Transform Transform;
     }
 }

@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _unitConfig: {fileID: 11400000, guid: 47e753f63fa40344091994e50ad860d0, type: 2}
+  _waypointConfig: {fileID: 11400000, guid: cee2c96d6e32fba4488b5929fcd0ee4a, type: 2}
 --- !u!4 &605275863
 Transform:
   m_ObjectHideFlags: 0
