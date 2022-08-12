@@ -10,14 +10,42 @@ namespace Features.Waypoints
         [SerializeField]
         private WaypointView _waypointView;
         public WaypointView WaypointView => _waypointView;
+        [SerializeField]
+        private Material _templateMaterial;
+
+        public Material TemplateMaterial => _templateMaterial;
 
         [SerializeField]
-        private List<WaypointViewSetting> _waypointViewSetting;
+        private Gradient _waypointWeightGradient;
+
+        [SerializeField]
+        private Vector2Int _weightRange;
 
 
-        public WaypointViewSetting GetWaypointViewSetting( WaypointType type)
+        private readonly Dictionary<float, Material> _cachedMaterials = new();
+        
+        public Material GetWaypointMaterial(float waypointWeight)
         {
-            return _waypointViewSetting.First(setting => setting.Type == type);
+            waypointWeight = Mathf.Clamp(waypointWeight, _weightRange.x, _weightRange.y);
+            
+            return _cachedMaterials.ContainsKey(waypointWeight)
+                ? _cachedMaterials[waypointWeight]
+                : CreateNewMaterial(waypointWeight);
+        }
+
+        private Material CreateNewMaterial(float waypointWeight)
+        {
+            var gradientRange = (float)_weightRange.y - _weightRange.x;
+            var mappedWeightGradient = 1f / gradientRange * (waypointWeight - _weightRange.x);
+            
+            var newMaterial = new Material(_templateMaterial)
+            {
+                color = _waypointWeightGradient.Evaluate(mappedWeightGradient)
+            };
+
+            _cachedMaterials[waypointWeight] = newMaterial;
+            
+            return newMaterial;
         }
     }
 }

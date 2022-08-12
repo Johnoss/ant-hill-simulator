@@ -2,5 +2,6 @@
 {
     public struct WaypointComponent
     {
+        public float WaypointWeight;
     }
 }

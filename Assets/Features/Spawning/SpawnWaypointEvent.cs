@@ -1,11 +1,10 @@
-﻿using Features.Waypoints;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Features.Spawning
 {
     public struct SpawnWaypointEvent
     {
         public Vector3 Position;
-        public WaypointType Type;
+        public float WaypointWeight;
     }
 }

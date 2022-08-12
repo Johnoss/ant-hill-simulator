@@ -11,8 +11,7 @@ namespace Features.Behaviour
     {
         private readonly EcsFilterInject<Inc<DecideDirectionCommand, PoseComponent, VisionComponent>> _decideCommands;
                 
-        private readonly EcsFilterInject<Inc<RepellerComponent, PoseComponent>> _repellentPool;
-        private readonly EcsFilterInject<Inc<AttractorComponent, PoseComponent>> _attractorPool;
+        private readonly EcsFilterInject<Inc<WaypointComponent, PoseComponent>> _repellentPool;
         
         private readonly EcsPoolInject<VisionComponent> _visionPool;
         private readonly EcsPoolInject<PoseComponent> _posePool;
@@ -34,8 +33,6 @@ namespace Features.Behaviour
                         repellentCount++;
                     }
                 }
-                
-                Debug.Log($"Repellent Count in range: {repellentCount}");
             }
         }
     }

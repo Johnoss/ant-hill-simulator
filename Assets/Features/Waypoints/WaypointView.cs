@@ -6,9 +6,9 @@ namespace Features.Waypoints
     {
         [SerializeField]
         private MeshRenderer _meshRenderer;
-        public void Setup(WaypointViewSetting waypointSetting)
+        public void Setup(Material waypointMaterial)
         {
-            _meshRenderer.material = waypointSetting.Material;
+            _meshRenderer.material = waypointMaterial;
         }
     }
 }

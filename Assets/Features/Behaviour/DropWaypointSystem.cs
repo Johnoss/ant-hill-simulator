@@ -2,6 +2,7 @@
 using Features.Position;
 using Features.Spawning;
 using Features.Unit;
+using Features.Utils;
 using Features.Waypoints;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
@@ -30,7 +31,8 @@ namespace Features.Behaviour
                 var eventEntity = _spawnUnitEventPool.Value.GetWorld().NewEntity();
                 ref var eventComponent = ref _spawnUnitEventPool.Value.Add(eventEntity);
                 eventComponent.Position = positionComponent.Pose.position;
-                eventComponent.Type = (WaypointType)Random.Range(0, 2);
+                //TODO placeholder! Decide according to current state (carrying food / not carrying food)
+                eventComponent.WaypointWeight = RandomExtensions.FlipCoin() ? -1 : 1;
             }
         }
     }
