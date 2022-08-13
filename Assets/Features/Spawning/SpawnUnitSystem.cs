@@ -48,6 +48,8 @@ namespace Features.Spawning
                 positionComponent.Transform = unitTransform;
 
                 visionComponent.VisionRadius = _unitConfig.Value.AntVisionRadius;
+                visionComponent.AngularDeviation = _unitConfig.Value.AntAngularDeviation;
+                visionComponent.ZonesCount = _unitConfig.Value.AntVisionZones;
             }
         }
     }

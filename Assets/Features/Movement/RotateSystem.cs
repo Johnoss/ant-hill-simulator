@@ -26,13 +26,13 @@ namespace Features.Movement
 
                 poseComponent.Pose.rotation = Quaternion.Lerp(currentRotation,
                     rotateComponent.TargetRotation, rotateComponent.RotateSpeed * Time.deltaTime);
-
+                    
                 if ((currentRotation.eulerAngles - rotateComponent.TargetRotation.eulerAngles).sqrMagnitude <=
                     DiffToStop)
                 {
                     ref var reachedEvent =
                         ref _targetReachedEvents.Value.Add(_targetReachedEvents.Value.GetWorld().NewEntity());
-
+                
                     reachedEvent.UnitEntity = entity;
                     
                     //TODO make new decision

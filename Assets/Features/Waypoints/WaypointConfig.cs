@@ -13,8 +13,6 @@ namespace Features.Waypoints
         [SerializeField]
         private Material _templateMaterial;
 
-        public Material TemplateMaterial => _templateMaterial;
-
         [SerializeField]
         private Gradient _waypointWeightGradient;
 

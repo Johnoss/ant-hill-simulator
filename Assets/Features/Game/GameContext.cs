@@ -47,7 +47,7 @@ namespace Features.Game
                 .DelHere<SpawnWaypointEvent>(Idents.Worlds.Events)
                 .DelHere<SpawnUnitEvent>(Idents.Worlds.Events)
                 .DelHere<UnitReachedTargetEvent>(Idents.Worlds.Events)
-                .Inject(_unitConfig, _waypointConfig)
+                .Inject(_unitConfig, _waypointConfig, Camera.main)
                 .Init();
         }
 

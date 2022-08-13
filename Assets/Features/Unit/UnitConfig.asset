@@ -16,5 +16,5 @@ MonoBehaviour:
   _antSpeed: 1.5
   _antTurnSpeed: 1
   _antVisionRadius: 6.2
-  _antAngularDeviation: 103.61
+  _antAngularDeviation: 45
   _antVisionZones: 3

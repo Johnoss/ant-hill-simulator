@@ -10,9 +10,9 @@ namespace Features.Unit
         private void OnDrawGizmosSelected()
         {
             var tr = transform;
-            var fromAngle = Quaternion.Euler(0, -_unitConfig.AntAngularDeviation / 2, 0) * tr.forward;
+            var fromAngle = Quaternion.Euler(0, -_unitConfig.AntAngularDeviation, 0) * tr.forward;
             
-            UnityEditor.Handles.DrawSolidArc(tr.position, tr.up, fromAngle, _unitConfig.AntAngularDeviation,
+            UnityEditor.Handles.DrawSolidArc(tr.position, tr.up, fromAngle, _unitConfig.AntAngularDeviation * 2,
                 _unitConfig.AntVisionRadius);
         }
     }
