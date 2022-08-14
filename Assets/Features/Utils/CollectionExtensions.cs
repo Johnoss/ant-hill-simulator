@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 
 namespace Features.Utils
 {
@@ -16,6 +17,11 @@ namespace Features.Utils
             }
 
             return true;
+        }
+
+        public static T RandomElement<T>(this List<T> list)
+        {
+            return list[Random.Range(0, list.Count)];
         }
     }
 }

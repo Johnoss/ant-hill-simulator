@@ -1,4 +1,5 @@
 ﻿using Features.Game;
+using Features.Resource;
 using Features.Unit;
 using Features.Waypoints;
 using Leopotam.EcsLite;
@@ -7,10 +8,11 @@ using UnityEngine;
 
 namespace Features.UserInput
 {
-    public class KeyboardInputSystem : IEcsRunSystem
+    public class UserInputSystem : IEcsRunSystem
     {
         private readonly EcsPoolInject<SpawnUnitEvent> _spawnUnitEventPool = Idents.Worlds.Events;
         private readonly EcsPoolInject<SpawnWaypointEvent> _spawnWaypointEventPool = Idents.Worlds.Events;
+        private readonly EcsPoolInject<SpawnResourceEvent> _spawnResourceEventPool = Idents.Worlds.Events;
 
         private readonly EcsCustomInject<Camera> _gameCamera;
 
@@ -48,11 +50,10 @@ namespace Features.UserInput
                 var ray = _gameCamera.Value.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out var raycastHit))
                 {
-                    var spawnWaypointEntity = _spawnWaypointEventPool.Value.GetWorld().NewEntity();
-                    ref var spawnWaypointEvent =  ref _spawnWaypointEventPool.Value.Add(spawnWaypointEntity);
-                    spawnWaypointEvent.Position = raycastHit.point;
-                    spawnWaypointEvent.Position.y = 0;
-                    spawnWaypointEvent.WaypointWeight = 100;
+                    var spawnResourceEntity = _spawnResourceEventPool.Value.GetWorld().NewEntity();
+                    ref var spawnResourceEvent =  ref _spawnResourceEventPool.Value.Add(spawnResourceEntity);
+                    spawnResourceEvent.Position = raycastHit.point;
+                    spawnResourceEvent.Position.y = 0;
                 }
             }
         }

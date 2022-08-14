@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7616f1b85d60499ca20e778fe815a31c, type: 3}
+  m_Name: ResourceConfig
+  m_EditorClassIdentifier: 
+  _resourceView: {fileID: 3410101790588543093, guid: 8c357f530488a5648a631b1d11da2cbc, type: 3}
+  _materials:
+  - {fileID: 2100000, guid: e79578f3f97962a4589be6c25aa205e5, type: 2}
+  - {fileID: 2100000, guid: 7bae89c34f232044e9401f84672c4e28, type: 2}
+  - {fileID: 2100000, guid: 4e876d09e9797bc4d86fe6ad263f5fe0, type: 2}
+  _meshes:
+  - {fileID: 4300000, guid: f05f3e8e0c36d604caada34446d63e27, type: 2}
+  - {fileID: 4300000, guid: 75859942eeb3bce49903ebfce754014c, type: 2}
+  - {fileID: 4300000, guid: 4e443e9031802554cbeb833eb0304938, type: 2}
+  _baseResourceAmount: 10
+  _baseWaypointWeight: 50
