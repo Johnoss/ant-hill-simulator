@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Features.Waypoints
@@ -7,21 +6,35 @@ namespace Features.Waypoints
     [CreateAssetMenu(menuName = "Create WaypointConfig", fileName = "WaypointConfig", order = 0)]
     public class WaypointConfig : ScriptableObject
     {
+        [Header("Visuals")]
         [SerializeField]
         private WaypointView _waypointView;
-        public WaypointView WaypointView => _waypointView;
         [SerializeField]
         private Material _templateMaterial;
-
         [SerializeField]
         private Gradient _waypointWeightGradient;
-
+        [SerializeField]
+        private bool _createWaypointsGameObjects;
+        
+        public WaypointView WaypointView => _waypointView;
+        public bool CreateWaypointsGameObjects => _createWaypointsGameObjects;
+        
+        [Header("Weight")]
         [SerializeField]
         private Vector2Int _weightRange;
+        [SerializeField]
+        private float _baseWaypointWeight;
 
+        public float BaseWaypointWeight => _baseWaypointWeight;
+        
+        [Header("Lifespan")]
+        [SerializeField]
+        private float _baseLifespanSeconds;
+        
+        public float BaseLifespanSeconds => _baseLifespanSeconds;
 
         private readonly Dictionary<float, Material> _cachedMaterials = new();
-        
+
         public Material GetWaypointMaterial(float waypointWeight)
         {
             waypointWeight = Mathf.Clamp(waypointWeight, _weightRange.x, _weightRange.y);

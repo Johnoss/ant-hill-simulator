@@ -1,21 +1,21 @@
-﻿using Features.Position;
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 
-namespace Features.Movement
+namespace Features.Position
 {
     public class PoseSystem : IEcsRunSystem
     {
-        private readonly EcsFilterInject<Inc<PoseComponent>> _positionPool;
+        private readonly EcsFilterInject<Inc<PoseComponent, TransformComponent>> _positionPool;
 
         public void Run(IEcsSystems systems)
         {
             foreach (var entity in _positionPool.Value)
             {
                 var positionComponent = _positionPool.Pools.Inc1.Get(entity);
+                var transformComponent = _positionPool.Pools.Inc2.Get(entity);
 
-                positionComponent.Transform.localPosition = positionComponent.Pose.position;
-                positionComponent.Transform.rotation = positionComponent.Pose.rotation;
+                transformComponent.Transform.localPosition = positionComponent.Pose.position;
+                transformComponent.Transform.rotation = positionComponent.Pose.rotation;
             }
         }
     }

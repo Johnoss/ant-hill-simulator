@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Features.Utils;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Features.Unit
 {
@@ -18,6 +20,12 @@ namespace Features.Unit
         private float _antAngularDeviation = 30f;
         [SerializeField]
         private int _antVisionZones = 3;
+        [SerializeField]
+        private float _antNewDirectionRandomDeviation;
+        [SerializeField]
+        private float _antDropWaypointFrequencySeconds;
+        [SerializeField]
+        private float _dropIntervalRandomDeviation;
 
         public UnitView AntPrefab => _antPrefab;
         public float AntSpeed => _antSpeed;
@@ -25,5 +33,13 @@ namespace Features.Unit
         public float AntVisionRadius => _antVisionRadius;
         public float AntAngularDeviation => _antAngularDeviation;
         public int AntVisionZones => _antVisionZones;
+        public float AntNewDirectionRandomDeviation => _antNewDirectionRandomDeviation;
+
+        public float GetDropIntervalSeconds()
+        {
+            return _antDropWaypointFrequencySeconds.AddRandomRange(
+                _dropIntervalRandomDeviation);
+        }
+        
     }
 }

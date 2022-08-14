@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Features.Spawning
+namespace Features.Waypoints
 {
     public struct SpawnWaypointEvent
     {

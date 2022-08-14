@@ -21,7 +21,6 @@ namespace Features.Behaviour
                 ref var decideCommand = ref _decideDirectionPool.Value.Add(eventComponent.UnitEntity);
 
                 decideCommand.DecidingEntity = eventComponent.UnitEntity;
-
             }
         }
     }

@@ -43,4 +43,7 @@ MonoBehaviour:
     m_Mode: 1
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
-  _weightRange: {x: -1, y: 99}
+  _createWaypointsGameObjects: 0
+  _weightRange: {x: -100, y: 99}
+  _baseWaypointWeight: 5
+  _baseLifespanSeconds: 10

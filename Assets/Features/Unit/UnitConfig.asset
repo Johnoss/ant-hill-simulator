@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: UnitConfig
   m_EditorClassIdentifier: 
   _antPrefab: {fileID: -8540829780891595316, guid: b74a80f707100b547951cc471e1a9628, type: 3}
-  _antSpeed: 1.5
-  _antTurnSpeed: 1
-  _antVisionRadius: 6.2
-  _antAngularDeviation: 45
+  _antSpeed: 2
+  _antTurnSpeed: 2.5
+  _antVisionRadius: 5
+  _antAngularDeviation: 65
   _antVisionZones: 3
+  _antNewDirectionRandomDeviation: 10
+  _antDropWaypointFrequencySeconds: 1
+  _dropIntervalRandomDeviation: 0.2

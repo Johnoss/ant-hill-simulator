@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using Features.Movement;
 using Features.Position;
 using Features.Unit;
 using Features.Utils;
@@ -12,37 +12,55 @@ namespace Features.Behaviour
 {
     public class DecideDirectionSystem : IEcsRunSystem
     {
-        private readonly EcsFilterInject<Inc<DecideDirectionCommand, PoseComponent, VisionComponent>> _decideCommands;
+        private readonly EcsFilterInject<Inc<DecideDirectionCommand, PoseComponent, VisionComponent, RotateComponent>>
+            _decideCommandPool;
                 
         private readonly EcsFilterInject<Inc<WaypointComponent, PoseComponent>> _waypointPool;
         
-        private readonly EcsPoolInject<VisionComponent> _visionPool;
-        private readonly EcsPoolInject<PoseComponent> _posePool;
-
         private readonly EcsCustomInject<UnitConfig> _unitConfig;
-
+        private readonly EcsCustomInject<WaypointConfig> _waypointConfig;
+        
         public void Run(IEcsSystems systems)
         {
-            foreach (var entity in _decideCommands.Value)
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var waypointsTicks = 0L;
+            foreach (var entity in _decideCommandPool.Value)
             {
-                var unitPosition = _posePool.Value.Get(entity);
-                var visionComponent = _visionPool.Value.Get(entity);
+                var unitPoseComponent = _decideCommandPool.Pools.Inc2.Get(entity);
+                var visionComponent = _decideCommandPool.Pools.Inc3.Get(entity);
+                ref var rotateComponent = ref _decideCommandPool.Pools.Inc4.Get(entity);
 
                 var zones = new float[_unitConfig.Value.AntVisionZones];
                 
-                foreach (var waypointEntity in _waypointPool.Value)
-                {
-                    var waypointPose = _waypointPool.Pools.Inc2.Get(waypointEntity);
-                    var zone = visionComponent.IsInZone(unitPosition, waypointPose);
-                    if (zone >= 0)
-                    {
-                        zones[zone] += _waypointPool.Pools.Inc1.Get(waypointEntity).WaypointWeight;
-                    }
-                }
+                var waypointsWatch = System.Diagnostics.Stopwatch.StartNew();
+                GetWaypointZones(visionComponent, unitPoseComponent, zones);
+                waypointsWatch.Stop();
+                
+                waypointsTicks += waypointsWatch.ElapsedTicks;
 
-                if (zones.Any(zone => zone != 0))
+                var newDirectionZone = zones.GetWeighedRandomIndex(_waypointConfig.Value.BaseWaypointWeight);
+                var newDirectionAngle = visionComponent.GetZoneDirectionAngle(newDirectionZone)
+                    .AddRandomRange(_unitConfig.Value.AntNewDirectionRandomDeviation);
+
+                rotateComponent.TargetRotation =
+                    Quaternion.AngleAxis(unitPoseComponent.Pose.rotation.eulerAngles.y + newDirectionAngle, Vector3.up);
+            }
+            
+            watch.Stop();
+        }
+
+        private void GetWaypointZones(VisionComponent visionComponent, PoseComponent unitPoseComponent, IList<float> zones)
+        {
+            var radius = visionComponent.VisionRadius;
+            var origin = unitPoseComponent.Pose.position.ToXZPlane();
+
+            foreach (var entity in _waypointPool.Value)
+            {
+                var waypointPose = _waypointPool.Pools.Inc2.Get(entity);
+                var zone = visionComponent.IsInZone(unitPoseComponent, waypointPose);
+                if (zone >= 0)
                 {
-                     Debug.Log($"zones weight: {string.Join(',', zones.ToList())}");
+                    zones[zone] += _waypointPool.Pools.Inc1.Get(entity).WaypointWeight;
                 }
             }
         }

@@ -1,4 +1,4 @@
-namespace Features.Spawning
+namespace Features.Unit
 {
     public struct SpawnUnitEvent
     {
