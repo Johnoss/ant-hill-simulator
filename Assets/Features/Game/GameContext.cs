@@ -5,6 +5,7 @@ using Features.Position;
 using Features.Timer;
 using Features.Unit;
 using Features.UserInput;
+using Features.ViewPool;
 using Features.Waypoints;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
@@ -27,6 +28,8 @@ namespace Features.Game
 
         private void Start()
         {
+            var waypointViewPool = new ViewPool<WaypointView>(_waypointConfig.WaypointView);
+            
             var world = new EcsWorld();
 
             _systems = new EcsSystems(world);
@@ -58,7 +61,7 @@ namespace Features.Game
                 .DelHere<SpawnUnitEvent>(Idents.Worlds.Events)
                 .DelHere<UnitReachedTargetEvent>(Idents.Worlds.Events)
                 .DelHere<TimerExpiredCommand>(Idents.Worlds.Timer)
-                .Inject(_unitConfig, _waypointConfig, Camera.main)
+                .Inject(_unitConfig, _waypointConfig, waypointViewPool, Camera.main)
                 .Init();
         }
 

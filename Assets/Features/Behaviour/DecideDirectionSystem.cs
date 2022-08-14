@@ -47,6 +47,7 @@ namespace Features.Behaviour
             }
             
             watch.Stop();
+            //Debug.Log($"DecideDirectionSystem took: {watch.ElapsedTicks} ticks - out of which {waypointsTicks}:");
         }
 
         private void GetWaypointZones(VisionComponent visionComponent, PoseComponent unitPoseComponent, IList<float> zones)

@@ -2,6 +2,7 @@
 using Features.Lifespan;
 using Features.Position;
 using Features.Timer;
+using Features.ViewPool;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace Features.Waypoints
         private readonly EcsPoolInject<TimerComponent> _timerPool = Idents.Worlds.Timer;
 
         private readonly EcsCustomInject<WaypointConfig> _waypointConfig;
+
+        private readonly EcsCustomInject<ViewPool<WaypointView>> _viewPool;
 
         public void Run(IEcsSystems systems)
         {
@@ -43,7 +46,7 @@ namespace Features.Waypoints
                 if (_waypointConfig.Value.CreateWaypointsGameObjects)
                 {
                     var waypointMaterial = _waypointConfig.Value.GetWaypointMaterial(spawnWaypointEvent.WaypointWeight);
-                    var waypointView = Object.Instantiate(_waypointConfig.Value.WaypointView);
+                    var waypointView = _viewPool.Value.GetOrCreate();
                     waypointView.Setup(waypointMaterial);
                     
                     ref var transformComponent = ref _transformPool.Value.Add(waypointEntity);

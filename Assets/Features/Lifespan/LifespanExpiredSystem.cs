@@ -31,7 +31,7 @@ namespace Features.Lifespan
             var lifespanEntity = lifespanTimerComponent.LifespanEntity;
             if (_transformPool.Value.Has(lifespanEntity))
             {
-                Object.Destroy(_transformPool.Value.Get(lifespanEntity).Transform.gameObject);
+                _transformPool.Value.Get(lifespanEntity).Transform.gameObject.SetActive(false);
             }
 
             lifespanTimerComponent.World.DelEntity(lifespanEntity);
