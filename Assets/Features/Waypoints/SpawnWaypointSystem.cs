@@ -6,7 +6,6 @@ using Features.ViewPool;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Features.Waypoints
 {
@@ -18,11 +17,11 @@ namespace Features.Waypoints
         private readonly EcsPoolInject<WaypointComponent> _waypointPool;
         private readonly EcsPoolInject<PoseComponent> _positionPool;
         private readonly EcsPoolInject<TransformComponent> _transformPool;
+        private readonly EcsPoolInject<StaticPoseComponent> _staticPosePool;
 
         private readonly EcsPoolInject<TimerComponent> _timerPool = Idents.Worlds.Timer;
 
         private readonly EcsCustomInject<WaypointConfig> _waypointConfig;
-
         private readonly EcsCustomInject<ViewPool<WaypointView>> _viewPool;
 
         public void Run(IEcsSystems systems)
@@ -36,10 +35,12 @@ namespace Features.Waypoints
                 
                 ref var poseComponent = ref _positionPool.Value.Add(waypointEntity);
                 ref var waypointComponent = ref _waypointPool.Value.Add(waypointEntity);
-
-                CreateLifespanTimer(waypointEntity, world);
+                _staticPosePool.Value.Add(waypointEntity);
                 
-                poseComponent.Pose = new Pose(spawnWaypointEvent.Position, Quaternion.identity);
+                CreateLifespanTimer(waypointEntity, world);
+
+                poseComponent.Pose =
+                    new Pose(spawnWaypointEvent.Position, Quaternion.Euler(0, Random.Range(0, 360), 0));
                 
                 waypointComponent.WaypointWeight = spawnWaypointEvent.WaypointWeight;
                 
@@ -50,7 +51,10 @@ namespace Features.Waypoints
                     waypointView.Setup(waypointMaterial);
                     
                     ref var transformComponent = ref _transformPool.Value.Add(waypointEntity);
-                    transformComponent.Transform = waypointView.transform;
+                    var waypointTransform = waypointView.transform;
+                    transformComponent.Transform = waypointTransform;
+                    waypointTransform.position = poseComponent.Pose.position;
+                    waypointTransform.rotation = poseComponent.Pose.rotation;
                 }
             }
         }

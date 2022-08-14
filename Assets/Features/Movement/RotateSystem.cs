@@ -9,7 +9,7 @@ namespace Features.Movement
 {
     public class RotateSystem : IEcsRunSystem
     {
-        private readonly EcsFilterInject<Inc<RotateComponent, PoseComponent>> _unitPool;
+        private readonly EcsFilterInject<Inc<RotateComponent, PoseComponent>, Exc<StaticPoseComponent>> _unitPool;
 
         private readonly EcsPoolInject<UnitReachedTargetEvent> _targetReachedEvents = Idents.Worlds.Events;
 

@@ -5,7 +5,7 @@ namespace Features.Position
 {
     public class PoseSystem : IEcsRunSystem
     {
-        private readonly EcsFilterInject<Inc<PoseComponent, TransformComponent>> _positionPool;
+        private readonly EcsFilterInject<Inc<PoseComponent, TransformComponent>, Exc<StaticPoseComponent>> _positionPool;
 
         public void Run(IEcsSystems systems)
         {

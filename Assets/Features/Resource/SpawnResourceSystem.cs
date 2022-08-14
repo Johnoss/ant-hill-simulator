@@ -16,6 +16,7 @@ namespace Features.Resource
         private readonly EcsPoolInject<WaypointComponent> _waypointPool;
         private readonly EcsPoolInject<PoseComponent> _posePool;
         private readonly EcsPoolInject<TransformComponent> _transformPool;
+        private readonly EcsPoolInject<StaticPoseComponent> _staticPosePool;
 
         private readonly EcsCustomInject<ResourceConfig> _resourceConfig;
         private readonly EcsCustomInject<ViewPool<ResourceView>> _resourceViewPool;
@@ -35,11 +36,14 @@ namespace Features.Resource
                 ref var waypointComponent = ref _waypointPool.Value.Add(resourceEntity);
                 ref var poseComponent = ref _posePool.Value.Add(resourceEntity);
                 ref var transformComponent = ref _transformPool.Value.Add(resourceEntity);
+                _staticPosePool.Value.Add(resourceEntity);
 
                 resourceComponent.ResourceAmount = _resourceConfig.Value.BaseResourceAmount;
                 waypointComponent.WaypointWeight = _resourceConfig.Value.BaseWaypointWeight;
                 poseComponent.Pose.position = spawnEvent.Position;
                 poseComponent.Pose.rotation = Random.rotation;
+                transformComponent.Transform.position = spawnEvent.Position;
+                transformComponent.Transform.rotation = poseComponent.Pose.rotation;
                 transformComponent.Transform = view.transform;
             }
         }

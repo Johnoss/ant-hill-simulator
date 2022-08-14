@@ -70,17 +70,11 @@ namespace Features.Game
                 .DelHere<SpawnResourceEvent>(Idents.Worlds.Events)
                 .DelHere<UnitReachedTargetEvent>(Idents.Worlds.Events)
                 .DelHere<TimerExpiredCommand>(Idents.Worlds.Timer)
-                .Inject(_unitConfig, _waypointConfig, _resourceConfig, waypointViewPool, resourceViewPool, Camera.main)
+                .Inject(_unitConfig, _waypointConfig, _resourceConfig, _gridConfig, gridService, waypointViewPool, resourceViewPool,
+                    Camera.main)
                 .Init();
         }
-
-        private static void ClearLog() //you can copy/paste this code to the bottom of your script
-        {
-            var assembly = Assembly.GetAssembly(typeof(UnityEditor.Editor));
-            var type = assembly.GetType("UnityEditor.LogEntries");
-            var method = type.GetMethod("Clear");
-            if (method != null) method.Invoke(new object(), null);
-        }
+        
         private void Update()
         {
             ClearLog();
