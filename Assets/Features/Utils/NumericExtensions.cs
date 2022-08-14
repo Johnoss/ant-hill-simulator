@@ -6,7 +6,7 @@ namespace Features.Utils
     {
         public static bool IsWithinRange<T>(this T comparable, T min, T max) where T : IComparable
         {
-            return min.CompareTo(comparable) <= 0 && max.CompareTo(comparable) >= 0;
+            return min.CompareTo(comparable) < 0 && max.CompareTo(comparable) > 0;
         }
     }
 }

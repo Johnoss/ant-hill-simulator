@@ -6,7 +6,12 @@ ModelImporter:
   - first:
       74: -623603649343465320
     second: Walk
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: color_black
+    second: {fileID: 2100000, guid: 87ece5c405a0fbc44b3b1e1ea99887e8, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
