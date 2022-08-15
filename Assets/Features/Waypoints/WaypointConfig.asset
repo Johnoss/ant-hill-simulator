@@ -46,4 +46,4 @@ MonoBehaviour:
   _createWaypointsGameObjects: 1
   _weightRange: {x: -100, y: 99}
   _baseWaypointWeight: 5
-  _baseLifespanSeconds: 15
+  _baseLifespanSeconds: 2

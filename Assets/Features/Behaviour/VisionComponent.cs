@@ -2,8 +2,7 @@
 {
     public struct VisionComponent
     {
-        public float VisionRadius;
-        public float AngularDeviation;
-        public int ZonesCount;
+        public int VisionRadius;
+        public float SideVisionAngle;
     }
 }

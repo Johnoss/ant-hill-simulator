@@ -11,10 +11,6 @@ namespace Features.Movement
     {
         private readonly EcsFilterInject<Inc<RotateComponent, PoseComponent>, Exc<StaticPoseComponent>> _unitPool;
 
-        private readonly EcsPoolInject<UnitReachedTargetEvent> _targetReachedEvents = Idents.Worlds.Events;
-
-        private const double DiffToStop = 5;
-
         public void Run(IEcsSystems systems)
         {
             foreach (var entity in _unitPool.Value)
@@ -24,19 +20,15 @@ namespace Features.Movement
 
                 var currentRotation = poseComponent.Pose.rotation;
 
-                poseComponent.Pose.rotation = Quaternion.Lerp(currentRotation,
+                poseComponent.Pose.rotation = Quaternion. Lerp(currentRotation,
                     rotateComponent.TargetRotation, rotateComponent.RotateSpeed * Time.deltaTime);
-                    
-                if ((currentRotation.eulerAngles - rotateComponent.TargetRotation.eulerAngles).sqrMagnitude <=
-                    DiffToStop)
-                {
-                    //TODO publish event about turn completed
-                    
-                    ref var reachedEvent =
-                        ref _targetReachedEvents.Value.Add(_targetReachedEvents.Value.GetWorld().NewEntity());
                 
-                    reachedEvent.UnitEntity = entity;
-                }
+                
+#if DEBUG && UNITY_EDITOR
+                // Debug.DrawLine(poseComponent.Pose.position, poseComponent.Pose.position + poseComponent.Pose.forward, Color.black);
+                // var targetPose = new Pose(poseComponent.Pose.position, rotateComponent.TargetRotation);
+                // Debug.DrawLine(poseComponent.Pose.position, poseComponent.Pose.position + targetPose.forward, Color.grey);
+#endif
             }
         }
     }

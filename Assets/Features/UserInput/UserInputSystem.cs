@@ -32,7 +32,7 @@ namespace Features.UserInput
                 }
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButton(0))
             {
                 var ray = _gameCamera.Value.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out var raycastHit))
@@ -41,7 +41,7 @@ namespace Features.UserInput
                     ref var spawnWaypointEvent =  ref _spawnWaypointEventPool.Value.Add(spawnWaypointEntity);
                     spawnWaypointEvent.Position = raycastHit.point;
                     spawnWaypointEvent.Position.y = 0;
-                    spawnWaypointEvent.HomeWaypointWeight = 30;
+                    spawnWaypointEvent.GoalWaypointWeight = 60;
                 }
             }
 

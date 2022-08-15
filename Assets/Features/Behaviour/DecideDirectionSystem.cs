@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Features.Grid;
 using Features.Movement;
 using Features.Position;
 using Features.Unit;
@@ -19,7 +20,8 @@ namespace Features.Behaviour
         
         private readonly EcsCustomInject<UnitConfig> _unitConfig;
         private readonly EcsCustomInject<WaypointConfig> _waypointConfig;
-        
+        private EcsCustomInject<GridService> _gridService;
+
         public void Run(IEcsSystems systems)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -33,37 +35,26 @@ namespace Features.Behaviour
                 var zones = new float[_unitConfig.Value.AntVisionZones];
                 
                 var waypointsWatch = System.Diagnostics.Stopwatch.StartNew();
-                GetWaypointZones(visionComponent, unitPoseComponent, zones);
                 waypointsWatch.Stop();
                 
                 waypointsTicks += waypointsWatch.ElapsedTicks;
 
-                var newDirectionZone = zones.GetWeighedRandomIndex(_waypointConfig.Value.BaseWaypointWeight);
-                var newDirectionAngle = visionComponent.GetZoneDirectionAngle(newDirectionZone)
-                    .AddRandomRange(_unitConfig.Value.AntNewDirectionRandomDeviation);
+                //TODO define seek patterns
+                // -1: avoid home
+                // 1: follow food
+                var seekFoodPattern = new[]{-1, 1};
+                
+                var zonesWeights = visionComponent.GetZonesWeights(unitPoseComponent, _gridService.Value, seekFoodPattern);
+                
+                var decidedZone = zonesWeights.GetWeighedRandomIndex(_waypointConfig.Value.BaseWaypointWeight);
+                //Debug.Log($"Weights: {string.Join(',', zonesWeights)}, decided: {decidedZone}");
 
                 rotateComponent.TargetRotation =
-                    Quaternion.AngleAxis(unitPoseComponent.Pose.rotation.eulerAngles.y + newDirectionAngle, Vector3.up);
+                    Quaternion.LookRotation(visionComponent.GetZoneDirection(unitPoseComponent, decidedZone));
             }
             
             watch.Stop();
             //Debug.Log($"DecideDirectionSystem took: {watch.ElapsedTicks} ticks - out of which {waypointsTicks}:");
-        }
-
-        private void GetWaypointZones(VisionComponent visionComponent, PoseComponent unitPoseComponent, IList<float> zones)
-        {
-            var radius = visionComponent.VisionRadius;
-            var origin = unitPoseComponent.Pose.position.ToXZPlane();
-
-            foreach (var entity in _waypointPool.Value)
-            {
-                var waypointPose = _waypointPool.Pools.Inc2.Get(entity);
-                var zone = visionComponent.IsInZone(unitPoseComponent, waypointPose);
-                if (zone >= 0)
-                {
-                    zones[zone] += _waypointPool.Pools.Inc1.Get(entity).HomeWaypointWeight;
-                }
-            }
         }
     }
 }

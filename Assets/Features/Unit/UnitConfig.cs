@@ -15,31 +15,38 @@ namespace Features.Unit
         [SerializeField]
         private float _antTurnSpeed = 2f;
         [SerializeField]
-        private float _antVisionRadius = 5f;
-        [SerializeField]
-        private float _antAngularDeviation = 30f;
+        private int _antVisionRadius = 2;
         [SerializeField]
         private int _antVisionZones = 3;
         [SerializeField]
         private float _antNewDirectionRandomDeviation;
         [SerializeField]
-        private float _antDropWaypointFrequencySeconds;
+        private float _antDropWaypointIntervalSeconds;
         [SerializeField]
         private float _dropIntervalRandomDeviation;
+        [SerializeField]
+        private float _antSideVisionAngles;
+        [SerializeField]
+        private float _antDecideIntervalSeconds;
+        [SerializeField]
+        private float _decideIntervalRandomDeviation;
 
         public UnitView AntPrefab => _antPrefab;
         public float AntSpeed => _antSpeed;
         public float AntTurnSpeed => _antTurnSpeed;
-        public float AntVisionRadius => _antVisionRadius;
-        public float AntAngularDeviation => _antAngularDeviation;
+        public int AntVisionRadius => _antVisionRadius;
         public int AntVisionZones => _antVisionZones;
         public float AntNewDirectionRandomDeviation => _antNewDirectionRandomDeviation;
+        public float AntSideVisionAngles => _antSideVisionAngles;
 
         public float GetDropIntervalSeconds()
         {
-            return _antDropWaypointFrequencySeconds.AddRandomRange(
-                _dropIntervalRandomDeviation);
+            return _antDropWaypointIntervalSeconds.AddRandomRange(_dropIntervalRandomDeviation);
         }
-        
+
+        public float GetDecideIntervalSeconds()
+        {
+            return _antDecideIntervalSeconds.AddRandomRange(_decideIntervalRandomDeviation);
+        }
     }
 }

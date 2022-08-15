@@ -30,7 +30,8 @@ namespace Features.Waypoints
                 ref var eventComponent = ref _spawnWaypointEventPool.Value.Add(eventEntity);
                 eventComponent.Position = dropperPoseComponent.Pose.position;
                 //TODO placeholder! Decide according to current state (carrying food / not carrying food)
-                eventComponent.HomeWaypointWeight = 1;
+                eventComponent.HomeWaypointWeight = 20;
+                eventComponent.GoalWaypointWeight = 0;
 
                 ref var timerComponent = ref _timerExpiredPool.Pools.Inc2.Get(timerEntity);
                 timerComponent.RemainingTimerSeconds = timerComponent.DefaultSeconds;

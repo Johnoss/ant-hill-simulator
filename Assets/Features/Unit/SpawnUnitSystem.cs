@@ -28,6 +28,7 @@ namespace Features.Unit
 
         private readonly EcsPoolInject<TimerComponent> _timerPool = Idents.Worlds.Timer;
         private readonly EcsPoolInject<DropWaypointTimerComponent> _dropWaypointPool = Idents.Worlds.Timer;
+        private readonly EcsPoolInject<DecideTimerComponent> _decidePool = Idents.Worlds.Timer;
 
         public void Run(IEcsSystems systems)
         {
@@ -45,7 +46,7 @@ namespace Features.Unit
 
                 //TODO Add spawning point on map - this is temporary center
                 poseComponent.Pose.position =
-                    new Vector3(_gridConfig.Value.GridResolution.x, 0, _gridConfig.Value.GridResolution.y) *
+                    new Vector3(_gridConfig.Value.GridResolution.x, .5f, _gridConfig.Value.GridResolution.y) *
                     _gridConfig.Value.CellWidth / 2;
                 
                 var unitView = Object.Instantiate(_unitConfig.Value.AntPrefab);
@@ -62,10 +63,10 @@ namespace Features.Unit
                 transformComponent.Transform = unitTransform;
 
                 visionComponent.VisionRadius = _unitConfig.Value.AntVisionRadius;
-                visionComponent.AngularDeviation = _unitConfig.Value.AntAngularDeviation;
-                visionComponent.ZonesCount = _unitConfig.Value.AntVisionZones;
+                visionComponent.SideVisionAngle = _unitConfig.Value.AntSideVisionAngles;
 
                 CreateDropWaypointTimer(unitEntity);
+                CreateDecideTimer(unitEntity);
             }
         }
 
@@ -80,6 +81,19 @@ namespace Features.Unit
             timerComponent.RemainingTimerSeconds = timerComponent.DefaultSeconds;
             
             dropWaypointComponent.DropperEntity = unitEntity;
+        }
+
+        private void CreateDecideTimer(int unitEntity)
+        {
+            var decideTimerEntity = _timerPool.Value.GetWorld().NewEntity();
+            
+            ref var timerComponent = ref _timerPool.Value.Add(decideTimerEntity);
+            ref var decideComponent = ref _decidePool.Value.Add(decideTimerEntity);
+
+            timerComponent.DefaultSeconds = _unitConfig.Value.GetDecideIntervalSeconds();
+            timerComponent.RemainingTimerSeconds = timerComponent.DefaultSeconds;
+            
+            decideComponent.Entity = unitEntity;
         }
     }
 }

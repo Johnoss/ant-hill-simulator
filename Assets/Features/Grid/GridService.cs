@@ -6,11 +6,13 @@ namespace Features.Grid
 {
     public class GridService
     {
-        private readonly NodeWeights[,] _gridNodeWeights;
+        private readonly GridConfig _gridConfig;
+        private NodeWeights[,] _gridNodeWeights;
 
         private readonly int _gridX;
         private readonly int _gridY;
-        private readonly float _cellWidth;
+        public float CellWidth { get; }
+        public Vector2Int GridCenter { get; }
 
 #if UNITY_EDITOR
         private int PopulatedCellsCount
@@ -18,46 +20,78 @@ namespace Features.Grid
             get
             {
                 return _gridNodeWeights.Cast<NodeWeights>().Count(nodeWeights =>
-                    nodeWeights.GoalMarkerWeight != 0 || nodeWeights.HomeMarkerWeight != 0);
+                    nodeWeights.Weights.Sum() != 0);
             }
         }
 #endif
 
         public GridService(GridConfig gridConfig)
         {
+            _gridConfig = gridConfig;
             _gridX = gridConfig.GridResolution.x;
             _gridY = gridConfig.GridResolution.y;
-            _cellWidth = gridConfig.CellWidth;
+            CellWidth = gridConfig.CellWidth;
             
+            PopulateGrid();
+
+            GridCenter = gridConfig.GridResolution / 2;
+        }
+
+        private void PopulateGrid()
+        {
             _gridNodeWeights = new NodeWeights[_gridX, _gridY];
+            
+            for (var row = 0; row < _gridNodeWeights.GetLength(0); row++)
+            {
+                if (_gridConfig.DrawGrid)
+                {
+                    Debug.DrawLine(new Vector3(row * CellWidth, 0, 0), new Vector3(row * CellWidth, 0, _gridX), _gridConfig.GridColor, float.MaxValue);
+                }
+                for (var column = 0; column < _gridNodeWeights.GetLength(1); column++)
+                {
+                    _gridNodeWeights[row, column] = new NodeWeights();
+                    
+                    if (_gridConfig.DrawGrid)
+                    {
+                        Debug.DrawLine(new Vector3(0, 0, column * CellWidth), new Vector3(_gridY, 0, column * CellWidth), _gridConfig.GridColor, float.MaxValue);
+                    }
+                }
+            }
         }
 
         public void UpdateWeights(Vector3 position, WaypointComponent waypointComponent, bool isRemoving = false)
         {
-            var gridCoordinates = GetCoordinatesFromPosition(position);
+            var nodeWeights = GetWeightsForPosition(position);
 
             var direction = isRemoving ? -1 : 1;
             
-            ref var nodeWeights = ref _gridNodeWeights[gridCoordinates.Item1, gridCoordinates.Item2];
-            nodeWeights.HomeMarkerWeight += direction * waypointComponent.HomeWaypointWeight;
-            nodeWeights.GoalMarkerWeight += direction * waypointComponent.GoalWaypointWeight;
+            nodeWeights.Weights[0] += direction * waypointComponent.HomeWaypointWeight;
+            nodeWeights.Weights[1] += direction * waypointComponent.GoalWaypointWeight;
 #if UNITY_EDITOR
             //Debug.Log($"Populated Cells Count: {PopulatedCellsCount}");
 #endif
         }
 
-        public NodeWeights GetWeightsForPosition(Vector2 position)
+        public NodeWeights GetWeightsForPosition(Vector3 position)
         {
             var gridCoordinates = GetCoordinatesFromPosition(position);
 
-            return _gridNodeWeights[gridCoordinates.Item1, gridCoordinates.Item2];
+            var weightsForPosition = _gridNodeWeights[gridCoordinates.x, gridCoordinates.y];
+
+            return weightsForPosition;
         }
 
-        private (int, int) GetCoordinatesFromPosition(Vector3 position)
+        public bool IsWithinBounds(Vector2 position)
         {
-            var cellRow = (int)(position.x / _cellWidth);
-            var cellColumn = (int)(position.z / _cellWidth);
-            return (cellRow, cellColumn);
+            var coordinates = GetCoordinatesFromPosition(position);
+            return 0 <= coordinates.x && coordinates.x < _gridX && 0 <= coordinates.y && coordinates.y < _gridY;
+        }
+        
+        public Vector2Int GetCoordinatesFromPosition(Vector3 position)
+        {
+            var cellRow = (int)(position.x * (1 / CellWidth));
+            var cellColumn = (int)(position.z * (1 / CellWidth));
+            return new Vector2Int(cellRow, cellColumn);
         }
     }
 }

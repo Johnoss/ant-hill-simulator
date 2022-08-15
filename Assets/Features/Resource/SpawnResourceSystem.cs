@@ -1,4 +1,5 @@
 ﻿using Features.Game;
+using Features.Grid;
 using Features.Position;
 using Features.ViewPool;
 using Features.Waypoints;
@@ -20,6 +21,7 @@ namespace Features.Resource
 
         private readonly EcsCustomInject<ResourceConfig> _resourceConfig;
         private readonly EcsCustomInject<ViewPool<ResourceView>> _resourceViewPool;
+        private readonly EcsCustomInject<GridService> _gridService;
 
         public void Run(IEcsSystems systems)
         {
@@ -45,6 +47,8 @@ namespace Features.Resource
                 transformComponent.Transform = view.transform;
                 transformComponent.Transform.position = spawnEvent.Position;
                 transformComponent.Transform.rotation = poseComponent.Pose.rotation;
+                
+                _gridService.Value.UpdateWeights(poseComponent.Pose.position, waypointComponent);
             }
         }
     }

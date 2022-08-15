@@ -1,5 +1,5 @@
-﻿using System.IO;
-using Features.Behaviour;
+﻿using Features.Behaviour;
+using Features.Grid;
 using Features.Position;
 using UnityEngine;
 
@@ -7,63 +7,46 @@ namespace Features.Utils
 {
     public static class VisionComponentExtensions
     {
-        public static int IsInZone(this VisionComponent visionComponent, PoseComponent visionOrigin,
-            PoseComponent comparePoseComponent)
+        public static float[] GetZonesWeights(this VisionComponent vision, PoseComponent pose, GridService gridService,
+            int[] seekPattern)
         {
-            var radiusSquared = visionComponent.VisionRadius * visionComponent.VisionRadius;
-
-            var direction = comparePoseComponent.Pose.position - visionOrigin.Pose.position;
-            var isInRange = radiusSquared > direction.sqrMagnitude;
-
-            if (!isInRange)
+            var zoneNodeWeights = new float[3];
+            
+            for (var i = 0; i < 3; i++)
             {
-                return -1;
+                var direction = vision.GetZoneDirection(pose, i);
+                zoneNodeWeights[i] = vision.GetZoneWeights(pose, gridService, direction, seekPattern);
             }
 
-            var poseForward = visionOrigin.Pose.forward;
-            var angle = Vector3.Angle(direction, poseForward) * GetAngleDirectionMultiplier(poseForward, direction);
-            var angularDeviation = visionComponent.AngularDeviation;
+            return zoneNodeWeights;
+        }
 
-            if (!angle.IsWithinRange(-angularDeviation, angularDeviation))
+        private static float GetZoneWeights(this VisionComponent visionComponent, PoseComponent pose,
+            GridService gridService, Vector3 normalizedDirection, int[] seekPattern)
+        {
+            var totalWeight = 0f;
+            for (var i = 0; i < visionComponent.VisionRadius; i++)
             {
-                return -1;
+                var direction = normalizedDirection * gridService.CellWidth * i;
+                var targetPosition = pose.Pose.position + direction;
+#if UNITY_EDITOR && DEBUG
+                var coordinates = gridService.GetCoordinatesFromPosition(targetPosition);
+                var cellCentreOffset = new Vector3(gridService.CellWidth / 2f, 0, gridService.CellWidth / 2f);
+                var cellCoordinates =
+                    new Vector3(coordinates.x * gridService.CellWidth, 0, coordinates.y * gridService.CellWidth) +
+                    cellCentreOffset;
+                var color = i == 0 ? Color.blue : Color.magenta;
+//                Debug.DrawLine(pose.Pose.position, cellCoordinates, color, 1f, false);
+#endif
+                totalWeight += gridService.GetWeightsForPosition(targetPosition).GetWeightFromNode(seekPattern);
             }
 
-            var zoneAngularWidth = visionComponent.GetZoneAngularWidth();
-
-            for (var zone = 0; zone < visionComponent.ZonesCount; zone++)
-            {
-                if (angle <= -angularDeviation + zoneAngularWidth * (zone + 1))
-                {
-                    return zone;
-                }
-            }
-
-            throw new InvalidDataException();
+            return totalWeight;
         }
 
-        private static float GetZoneAngularWidth(this VisionComponent visionComponent)
+        public static Vector3 GetZoneDirection(this VisionComponent vision, PoseComponent pose, int zoneIndex)
         {
-            return visionComponent.AngularDeviation * 2f / visionComponent.ZonesCount;
-        }
-
-        public static float GetZoneDirectionAngle(this VisionComponent visionComponent, int zoneIndex)
-        {
-            var angularWidth = visionComponent.GetZoneAngularWidth();
-            return -visionComponent.AngularDeviation + (angularWidth / 2f + zoneIndex * angularWidth);
-        }
-
-        private static float GetAngleDirectionMultiplier(Vector3 forward, Vector3 targetDirection)
-        {
-            var cross = Vector3.Cross(forward, targetDirection);
-            var dot = Vector3.Dot(cross, Vector3.up);
-
-            return dot switch
-            {
-                > 0f => 1f,
-                < 0f => -1f,
-                _ => 0f
-            };
+            return Quaternion.Euler(0, vision.SideVisionAngle * zoneIndex - 1, 0) * pose.Pose.forward;
         }
     }
 }

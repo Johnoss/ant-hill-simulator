@@ -53,6 +53,7 @@ namespace Features.Game
                 .Add(new TimerSystem())
                 .Add(new UserInputSystem())
                 .Add(new DropWaypointTimerSystem())
+                .Add(new DecideDirectionTimerSystem())
                 .Add(new WaypointGridSyncSystem())
                 .Add(new LifespanExpiredSystem())
                 .Add(new SpawnUnitSystem())
@@ -61,7 +62,6 @@ namespace Features.Game
                 .Add(new StartMovingSystem())
                 .Add(new RotateSystem())
                 .Add(new MoveSystem())
-                .Add(new ReachedTargetSystem())
                 .Add(new DecideDirectionSystem())
                 .Add(new PoseSystem())
 #if UNITY_EDITOR
@@ -73,7 +73,6 @@ namespace Features.Game
                 .DelHere<SpawnWaypointEvent>(Idents.Worlds.Events)
                 .DelHere<SpawnUnitEvent>(Idents.Worlds.Events)
                 .DelHere<SpawnResourceEvent>(Idents.Worlds.Events)
-                .DelHere<UnitReachedTargetEvent>(Idents.Worlds.Events)
                 .DelHere<TimerExpiredCommand>(Idents.Worlds.Timer)
                 .Inject(_unitConfig, _waypointConfig, _resourceConfig, _gridConfig, gridService, waypointViewPool, resourceViewPool,
                     Camera.main)

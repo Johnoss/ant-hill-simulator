@@ -2,6 +2,5 @@
 {
     public struct DecideDirectionCommand
     {
-        public int DecidingEntity;
     }
 }
