@@ -1,7 +1,9 @@
 ﻿using Features.Game;
+using Features.Grid;
 using Features.Lifespan;
 using Features.Position;
 using Features.Timer;
+using Features.Utils;
 using Features.ViewPool;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
@@ -24,6 +26,8 @@ namespace Features.Waypoints
         private readonly EcsCustomInject<WaypointConfig> _waypointConfig;
         private readonly EcsCustomInject<ViewPool<WaypointView>> _viewPool;
 
+        private readonly EcsCustomInject<GridService> _gridService;
+
         public void Run(IEcsSystems systems)
         {
             foreach (var entity in _spawnWaypointEvents.Value)
@@ -42,11 +46,14 @@ namespace Features.Waypoints
                 poseComponent.Pose =
                     new Pose(spawnWaypointEvent.Position, Quaternion.Euler(0, Random.Range(0, 360), 0));
                 
-                waypointComponent.WaypointWeight = spawnWaypointEvent.WaypointWeight;
+                waypointComponent.HomeWaypointWeight = spawnWaypointEvent.HomeWaypointWeight;
+                waypointComponent.GoalWaypointWeight = spawnWaypointEvent.GoalWaypointWeight;
                 
                 if (_waypointConfig.Value.CreateWaypointsGameObjects)
                 {
-                    var waypointMaterial = _waypointConfig.Value.GetWaypointMaterial(spawnWaypointEvent.WaypointWeight);
+                    var waypointMaterial =
+                        _waypointConfig.Value.GetWaypointMaterial(spawnWaypointEvent.HomeWaypointWeight -
+                                                                  spawnWaypointEvent.GoalWaypointWeight);
                     var waypointView = _viewPool.Value.GetOrCreate();
                     waypointView.Setup(waypointMaterial);
                     
@@ -56,6 +63,8 @@ namespace Features.Waypoints
                     waypointTransform.position = poseComponent.Pose.position;
                     waypointTransform.rotation = poseComponent.Pose.rotation;
                 }
+                
+                _gridService.Value.UpdateWeights(spawnWaypointEvent.Position, waypointComponent);
             }
         }
 

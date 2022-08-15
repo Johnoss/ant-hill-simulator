@@ -5,6 +5,7 @@ namespace Features.Waypoints
     public struct SpawnWaypointEvent
     {
         public Vector3 Position;
-        public float WaypointWeight;
+        public float HomeWaypointWeight;
+        public float GoalWaypointWeight;
     }
 }

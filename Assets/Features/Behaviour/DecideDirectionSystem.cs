@@ -61,7 +61,7 @@ namespace Features.Behaviour
                 var zone = visionComponent.IsInZone(unitPoseComponent, waypointPose);
                 if (zone >= 0)
                 {
-                    zones[zone] += _waypointPool.Pools.Inc1.Get(entity).WaypointWeight;
+                    zones[zone] += _waypointPool.Pools.Inc1.Get(entity).HomeWaypointWeight;
                 }
             }
         }

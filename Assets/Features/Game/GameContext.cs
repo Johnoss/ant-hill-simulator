@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using Features.Behaviour;
+﻿using Features.Behaviour;
+using Features.Grid;
 using Features.Lifespan;
 using Features.Movement;
 using Features.Position;
@@ -29,6 +29,8 @@ namespace Features.Game
         private WaypointConfig _waypointConfig;
         [SerializeField]
         private ResourceConfig _resourceConfig;
+        [SerializeField]
+        private GridConfig _gridConfig;
 
         private EcsSystems _systems;
 
@@ -36,6 +38,8 @@ namespace Features.Game
         {
             var waypointViewPool = new ViewPool<WaypointView>(_waypointConfig.WaypointView);
             var resourceViewPool = new ViewPool<ResourceView>(_resourceConfig.ResourceView);
+
+            var gridService = new GridService(_gridConfig);
             
             var world = new EcsWorld();
 
@@ -49,6 +53,7 @@ namespace Features.Game
                 .Add(new TimerSystem())
                 .Add(new UserInputSystem())
                 .Add(new DropWaypointTimerSystem())
+                .Add(new WaypointGridSyncSystem())
                 .Add(new LifespanExpiredSystem())
                 .Add(new SpawnUnitSystem())
                 .Add(new SpawnWaypointSystem())
@@ -60,8 +65,8 @@ namespace Features.Game
                 .Add(new DecideDirectionSystem())
                 .Add(new PoseSystem())
 #if UNITY_EDITOR
-                .Add (new EcsWorldDebugSystem ())
-                .Add (new EcsWorldDebugSystem (Idents.Worlds.Events))
+                .Add(new EcsWorldDebugSystem())
+                .Add(new EcsWorldDebugSystem(Idents.Worlds.Events))
 #endif
                 .DelHere<DecideDirectionCommand>()
                 .DelHere<MoveCommand>()
@@ -77,8 +82,6 @@ namespace Features.Game
         
         private void Update()
         {
-            ClearLog();
-
             _systems?.Run();
         }
 

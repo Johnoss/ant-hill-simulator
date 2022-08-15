@@ -2,7 +2,7 @@
 {
     public struct WaypointComponent
     {
-        public float WaypointWeight;
-
+        public float HomeWaypointWeight;
+        public float GoalWaypointWeight;
     }
 }

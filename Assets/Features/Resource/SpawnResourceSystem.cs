@@ -39,12 +39,12 @@ namespace Features.Resource
                 _staticPosePool.Value.Add(resourceEntity);
 
                 resourceComponent.ResourceAmount = _resourceConfig.Value.BaseResourceAmount;
-                waypointComponent.WaypointWeight = _resourceConfig.Value.BaseWaypointWeight;
+                waypointComponent.HomeWaypointWeight = _resourceConfig.Value.BaseWaypointWeight;
                 poseComponent.Pose.position = spawnEvent.Position;
                 poseComponent.Pose.rotation = Random.rotation;
+                transformComponent.Transform = view.transform;
                 transformComponent.Transform.position = spawnEvent.Position;
                 transformComponent.Transform.rotation = poseComponent.Pose.rotation;
-                transformComponent.Transform = view.transform;
             }
         }
     }

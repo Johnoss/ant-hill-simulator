@@ -3,7 +3,6 @@ using Features.Position;
 using Features.Timer;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
-using UnityEngine;
 
 namespace Features.Lifespan
 {

@@ -41,7 +41,7 @@ namespace Features.UserInput
                     ref var spawnWaypointEvent =  ref _spawnWaypointEventPool.Value.Add(spawnWaypointEntity);
                     spawnWaypointEvent.Position = raycastHit.point;
                     spawnWaypointEvent.Position.y = 0;
-                    spawnWaypointEvent.WaypointWeight = -50;
+                    spawnWaypointEvent.HomeWaypointWeight = 30;
                 }
             }
 
